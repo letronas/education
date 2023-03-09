@@ -12,7 +12,7 @@ May 24 16:19:52 PC-00233 systemd[1116]: Reached target Sound Card.
 May 24 19:26:40 PC-00102 rtkit-daemon[1131]: Supervising 5 threads of 2 processes of 1 users.'''
 
 # 3
-list_if_dicts = [
+list_of_dicts = [
     {'id': 382, 'total': 999641890816, 'used': 228013805568},
     {'id': 385, 'total': 61686008768, 'used': 52522710872},
     {'id': 398, 'total': 149023482194, 'used': 83612310700},
@@ -27,10 +27,10 @@ new_list = []
 
 
 # 2.1
-def rows_in_list(p_num, p_list=log_list):
-    for r in range(p_num):
-        
-        v_rlist = log_list[r].split()
+def rows_in_list(*args, p_list=log_list): # поменял параметры местами, так как p_list задан по умолчанию
+    i_list = list(args)  # новый лист, состоящий из моих строк
+    for r in range(len(i_list)):
+        v_rlist = i_list[r].split()
         # 2.2
         v_dict = {
             'time': f"{v_rlist[1] + ' ' + v_rlist[0] + '/' + v_rlist[2]}",
@@ -40,15 +40,18 @@ def rows_in_list(p_num, p_list=log_list):
             'message': " ".join(v_rlist[4:])  # тут я переделал, так как join читается легче
         }
         # 2.3
-        log_list.append(v_dict)
-        if r in (0, 1, 3):
-            # 2.4
-            new_list.append(log_list[r])
+        p_list.append(v_dict)
+
+    # Возможно эта часть подразумевалась автоматизированной?
+    new_list.append(p_list[0])
+    new_list.append(p_list[1])
+    new_list.append(p_list[3])
     print(new_list)
 
 
+
 # 4.1
-def dict_analyze(p_dict_list=list_if_dicts):
+def dict_analyze(p_dict_list=list_of_dicts):
     final_task_dict = {}
     for i in p_dict_list:
         #  Вычисляет количество и процент свободной памяти на выбранном накопителе.
@@ -59,11 +62,20 @@ def dict_analyze(p_dict_list=list_if_dicts):
         v_perc_usage = 100 - (v_used_space / (v_total_space / 100))
         
         if v_perc_usage < 5 or v_free_space / 1024 / 1024 / 1024 < 10:
-            final_dict('memory_critical', final_task_dict, i.get('id'))
+            final_task_dict['memory_critical'] = final_task_dict.get('memory_critical', []) + list([i.get('id')])
         elif v_perc_usage < 10 or v_free_space / 1024 / 1024 / 1024 < 30:
-            final_dict('memory_not_enough', final_task_dict, i.get('id'))
+            final_task_dict['memory_not_enough'] = final_task_dict.get('memory_not_enough', []) + list([i.get('id')])
         else:
-            final_dict('memory_ok', final_task_dict, i.get('id'))
+            final_task_dict['memory_ok'] = final_task_dict.get('memory_ok', []) + list([i.get('id')])
+            
+        ''' Alternative solution
+        if v_perc_usage < 5 or v_free_space / 1024 / 1024 / 1024 < 10:
+            final_dict.update({'memory_critical' : final_dict.get('memory_critical') + list([i.get('id')])})
+        elif v_perc_usage < 10 or v_free_space / 1024 / 1024 / 1024 < 30:
+            final_dict.update({'memory_not_enough': final_dict.get('memory_not_enough') + list([i.get('id')])})
+        else:
+            final_dict.update({'memory_ok': final_dict.get('memory_ok') + list([i.get('id')])})
+        '''
     return final_task_dict
 
 
@@ -71,7 +83,9 @@ def final_dict(p_state, p_final_task_dict, new_id):
     p_final_task_dict[p_state] = p_final_task_dict.get(p_state, []) + list([new_id])
 
 
-rows_in_list(4)  # решил явно не передавать список, это выглядело нелогично
+rows_in_list("Jan 09 12:56:28 PC0507 systemd[404]: Starting Docker container...")
+
+
 
 # 4.2
 print(dict_analyze())  # лучше, конечно, использовать множества, так как так можно исключить дубли
