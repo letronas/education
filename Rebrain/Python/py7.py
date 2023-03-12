@@ -22,36 +22,32 @@ list_of_dicts = [
     {'id': 430, 'total': 49705846287, 'used': 9522710872},
 ]
 
-log_list = log_msg.split('\n')
 new_list = []
 
 
 # 2.1
-def rows_in_list(*args, p_list=log_list): # поменял параметры местами, так как p_list задан по умолчанию
-    i_list = list(args)  # новый лист, состоящий из моих строк
-    for r in range(len(i_list)):
-        v_rlist = i_list[r].split()
-        # 2.2
-        v_dict = {
-            'time': f"{v_rlist[1] + ' ' + v_rlist[0] + '/' + v_rlist[2]}",
-            'pc_name': v_rlist[3],
-            'service_name': v_rlist[4].rstrip(':'),
-            # Сообщение начинается после сервиса, поэтому нам надо найти индекс первого двоеточия после имени сервиса
-            'message': " ".join(v_rlist[4:])  # тут я переделал, так как join читается легче
-        }
-        # 2.3
-        p_list.append(v_dict)
-
-    # Возможно эта часть подразумевалась автоматизированной?
-    new_list.append(p_list[0])
-    new_list.append(p_list[1])
-    new_list.append(p_list[3])
-    print(new_list)
-
+def rows_in_list(*args, p_list):
+    i = 0
+    for r in args:
+        i += 1
+        if i in (1, 2, 4):
+            v_rlist = r.split()
+            # 2.2
+            v_dict = {
+                'time': f"{v_rlist[1] + ' ' + v_rlist[0] + '/' + v_rlist[2]}",
+                'pc_name': v_rlist[3],
+                'service_name': v_rlist[4].rstrip(':'),
+                # Сообщение начинается после сервиса,
+                # поэтому нам надо найти индекс первого двоеточия после имени сервиса
+                'message': " ".join(v_rlist[4:])  # тут я переделал, так как join читается легче
+            }
+            # 2.3
+            new_list.append(v_dict)
+    return new_list
 
 
 # 4.1
-def dict_analyze(p_dict_list=list_of_dicts):
+def dict_analyze(p_dict_list):
     final_task_dict = {}
     for i in p_dict_list:
         #  Вычисляет количество и процент свободной памяти на выбранном накопителе.
@@ -67,7 +63,7 @@ def dict_analyze(p_dict_list=list_of_dicts):
             final_task_dict['memory_not_enough'] = final_task_dict.get('memory_not_enough', []) + list([i.get('id')])
         else:
             final_task_dict['memory_ok'] = final_task_dict.get('memory_ok', []) + list([i.get('id')])
-            
+        
         ''' Alternative solution
         if v_perc_usage < 5 or v_free_space / 1024 / 1024 / 1024 < 10:
             final_dict.update({'memory_critical' : final_dict.get('memory_critical') + list([i.get('id')])})
@@ -83,9 +79,14 @@ def final_dict(p_state, p_final_task_dict, new_id):
     p_final_task_dict[p_state] = p_final_task_dict.get(p_state, []) + list([new_id])
 
 
-rows_in_list("Jan 09 12:56:28 PC0507 systemd[404]: Starting Docker container...")
-
-
+print(rows_in_list(
+    "Jan 09 12:56:28 PC0507 systemd[404]: Starting Docker container...",
+    "May 18 13:06:54 ideapad kwin_x11[1273]: Qt Quick Layouts: Detected recursive rearrange. Aborting after two "
+    "iterations.",
+    "May 20 09:16:28 PC0078 systemd[1]: Starting PackageKit Daemon...",
+    "May 20 12:48:18 PC0078 systemd[1]: Starting Message of the Day...",
+    "May 22 11:50:09 ideapad mtp-probe: bus: 1, device: 3 was not an MTP device",
+    "May 24 16:19:52 PC-00233 systemd[1116]: Reached target Sound Card.", p_list=new_list))
 
 # 4.2
-print(dict_analyze())  # лучше, конечно, использовать множества, так как так можно исключить дубли
+print(dict_analyze(p_dict_list=list_of_dicts))
