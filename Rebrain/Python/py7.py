@@ -42,8 +42,8 @@ def rows_in_list(*args, p_list):
                 'message': " ".join(v_rlist[4:])  # тут я переделал, так как join читается легче
             }
             # 2.3
-            new_list.append(v_dict)
-    return new_list
+            p_list.append(v_dict)
+    return p_list
 
 
 # 4.1
