@@ -2,13 +2,13 @@ import argparse
 import logging
 from time import sleep
 
-# Описание параметров
+# РћРїРёСЃР°РЅРёРµ РїР°СЂР°РјРµС‚СЂРѕРІ
 parser = argparse.ArgumentParser()
-parser.add_argument('-rn', '--row_number', required=True, type=int, help='Требуемое количество записей')
-parser.add_argument('-lat', '--latency', required=True, type=int, help='Требуемая задержка')
+parser.add_argument('-rn', '--row_number', required=True, type=int, help='РўСЂРµР±СѓРµРјРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ Р·Р°РїРёСЃРµР№')
+parser.add_argument('-lat', '--latency', required=True, type=int, help='РўСЂРµР±СѓРµРјР°СЏ Р·Р°РґРµСЂР¶РєР°')
 args = parser.parse_args()
 
-# Настрока базового конфига логгирования
+# РќР°СЃС‚СЂРѕРєР° Р±Р°Р·РѕРІРѕРіРѕ РєРѕРЅС„РёРіР° Р»РѕРіРіРёСЂРѕРІР°РЅРёСЏ
 logging.basicConfig(filename='log_file.log', format='%(asctime)s  %(levelname)s  %(message)s',
                         datefmt='%b %d %H:%M:%S', level='INFO')
 
