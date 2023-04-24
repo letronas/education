@@ -33,7 +33,7 @@ check_email(input())
 def check_mail(mail):
     allow = set("abcdefghijklmnopqrstuvwxyz0123456789_@.")
     nesessary = {"@", "."}
-    print("дю") if nesessary <= mail <= allow else print("мер")
+    print("дю") if nesessary < mail <= allow else print("мер")
 
 
 msg = set(input().lower())
