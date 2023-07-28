@@ -37,6 +37,8 @@ for a in sm.apps:
     print(a.name)
 
 """
+
+
 class SmartPhone:
     def __init__(self, model):
         self.model = model
