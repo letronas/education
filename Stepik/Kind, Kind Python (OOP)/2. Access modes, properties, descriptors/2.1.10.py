@@ -6,7 +6,7 @@
 em = EmailValidator() # None
 В самом классе реализовать следующие методы класса (@classmethod):
 
-get_random_email(cls) - для генерации случайного email-адреса по формату: xxxxxxx...xxx@gmail.com
+get_random_email(cls) - для генерации случайного email-адреса по формату: xxxxxxxxxx@gmail.com
 , где x - любой допустимый символ в email (латинский буквы, цифры, символ подчеркивания и точка);
 check_email(cls, email) - возвращает True, если email записан верно и False - в противном случае.
 
