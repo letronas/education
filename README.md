@@ -1,4 +1,5 @@
-Welcome to your new dbt project!
+This is my repo for education code + dbt testing
+
 
 ### Using the starter project
 
