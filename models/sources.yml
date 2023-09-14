@@ -8,8 +8,21 @@ sources:
       tables:
           - name: customers
             description: One record per customer.
+            columns:
+              - name: id
+                description: Unique customer id, primary key
+                tests:
+                  - unique
+                  - not_null
+                      
           - name: orders
             description: One record per order. Includes cancelled and deleted orders.
+            columns:
+              - name: id
+                description: Unique order id, primaty key
+                tests:
+                  - not_null
+                  - unique
             loaded_at_field: _etl_loaded_at
             freshness:
               warn_after: {count: 12, period: hour}
